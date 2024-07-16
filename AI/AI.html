@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嵌入 Coze 聊天窗口</title>
+    <style>
+        /* 设置聊天窗口容器的宽度和高度 */
+        #coze-chat-container {
+            width: 400px;  /* 你可以根据需要调整宽度 */
+            height: 1000px; /* 你可以根据需要调整高度 */
+        }
+    </style>
+</head>
+<body>
+    <div id="coze-chat-container"></div> <!-- 给聊天窗口容器添加一个id -->
+
+    <script src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/0.1.0-beta.3/libs/oversea/index.js"></script>
+    <script>
+        new CozeWebSDK.WebChatClient({
+            config: {
+              bot_id: '7377608752100704274',
+            },
+            componentProps: {
+              title: 'Coze',
+            },
+            container: document.getElementById('coze-chat-container')  // 指定聊天窗口的容器
+        });
+    </script>
+</body>
+</html>
