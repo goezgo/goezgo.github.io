@@ -1,19 +1,33 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>嵌入 Coze 聊天窗口</title>
     <style>
+body {
+    width:100%;
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    text-align:center;
+    align-items: center;
+    overflow: hidden;
+    position: fixed;
+}
         /* 设置聊天窗口容器的宽度和高度 */
         #coze-chat-container {
             width: 400px;  /* 你可以根据需要调整宽度 */
             height: 1000px; /* 你可以根据需要调整高度 */
         }
+
     </style>
 </head>
 <body>
-    <div id="coze-chat-container"></div> <!-- 给聊天窗口容器添加一个id -->
+<div style="font-size: 24px;">AI 客服助理🎧  <p>
+<span  style="font-size: 20px;">點擊下方圖示開始與AI交談</span>
+</div>
+
+    <div id="coze-chat-container"></div><!-- 给聊天窗口容器添加一个id -->
 
     <script src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/0.1.0-beta.3/libs/oversea/index.js"></script>
     <script>
