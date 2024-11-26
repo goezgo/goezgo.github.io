@@ -1,4 +1,5 @@
 ﻿$(function(){
+	tipspop('init');
 	var	arrRelyConfig  = {	
 		'5': '0,40cm門板',
 		'16': '6,80cm門板-7,80cm雙抽屜門板'
@@ -56,6 +57,8 @@
 		drop: function (e, ui) {
 			var tempObj		= ui.draggable;
             
+			tipspop('11111111')
+
             //判断配件是否拖进柜体
             if (tempObj.hasClass('dragCom')) {
                 $('#isfirstbase').val('0');
@@ -165,6 +168,8 @@
 				hoverClass: 'hover',
 				accept: ".dragCom",
 				drop: function (e, ui) {    
+
+					tipspop('222222222')
                     
                     $('#isfirstbase').val('1');
                     
