@@ -1,4 +1,5 @@
 ﻿$(function(){
+	tipspop('init');
 	var	arrRelyConfig  = {	
 		'5': '0,40cm門板',
 		'16': '6,80cm門板-7,80cm雙抽屜門板'
@@ -56,6 +57,8 @@
 		drop: function (e, ui) {
 			var tempObj		= ui.draggable;
             
+			tipspop('11111111')
+
             //判断配件是否拖进柜体
             if (tempObj.hasClass('dragCom')) {
                 $('#isfirstbase').val('0');
@@ -165,6 +168,8 @@
 				hoverClass: 'hover',
 				accept: ".dragCom",
 				drop: function (e, ui) {    
+
+					tipspop('222222222')
                     
                     $('#isfirstbase').val('1');
                     
@@ -307,19 +312,19 @@
 		}
 	});	
 	
-	$('#dropzone').delegate('.drag-item', 'mouseover', function(){
+	$('#dropzone').delegate('.drag-item', 'mouseover touchstart', function(){
 		$(this).find('.remove').show();
 	});
-	$('#dropzone').delegate('.drag-item', 'mouseout', function(){
+	$('#dropzone').delegate('.drag-item', 'mouseout touchend', function(){
 		$(this).find('.remove').hide();
 	});
 
-	$('#dropzone').delegate('.drop-item', 'mouseover', function(){
+	$('#dropzone').delegate('.drop-item', 'mouseover touchstart', function(){
 		if ($(this).find('.drag-item:visible').length == 0) {
 			$(this).find('.remove').show();		
 		}
 	});
-	$('#dropzone').delegate('.drop-item', 'mouseout', function(){
+	$('#dropzone').delegate('.drop-item', 'mouseout touchend', function(){
 		$(this).find('.remove').hide();
 	});	
     
@@ -444,10 +449,10 @@ function totalPrice() {
 		'4': 950,
 		'5': 750,
 		'6': 2200,
-		'7': 5250,
-		'8': 8400,
+		'7': 5950,
+		'8': 9800,
 		'9': 600,
-		'10': 3600,
+		'10': 4300,
 		'11': 250,
 		'12': 450,
 		'13': 1150,
