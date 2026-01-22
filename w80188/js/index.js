@@ -456,8 +456,8 @@ function totalPrice() {
 		'11': 250,
 		'12': 450,
 		'13': 1650,
-		'14': 2500,
-		'15': 2400,
+		'14': 4000,
+		'15': 2500,
 		'16': 750
 	};
     var	arrComPackagePriceConfig  = {
