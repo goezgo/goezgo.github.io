@@ -558,13 +558,8 @@
              讀取價格 / 狀態
           ========================= */
 
-          let price =
-            prices[zone] &&
-            prices[zone][index] !== undefined
-
-              ? prices[zone][index]
-
-              : '未開放';
+          const hasPrice = prices[zone] && prices[zone][index] !== undefined;
+          let price = hasPrice ? prices[zone][index] : '';
 
 
           tower.dataset.price = price;
@@ -614,33 +609,28 @@
           /* =========================
              已選
           ========================= */
-
           if (taken.has(code)) {
-
             tower.classList.add('taken');
-
             tower.style.backgroundColor = '#999';
-
             tower.style.cursor = 'not-allowed';
-
             tower.style.color = 'white';
+            tower.innerHTML = `${code}<br>已選`;
 
-            tower.innerHTML =
-              `${code}<br>已選`;
+        } else if (!hasPrice) {
+            // 沒有價格資料：保留位置，但完全空白
+            tower.classList.add('empty-slot');
+            tower.style.backgroundColor = 'transparent';
+            tower.style.border = 'none';
+            tower.style.color = 'transparent';
+            tower.style.marginRight = '7px';
+            tower.style.cursor = 'default';
+            tower.innerHTML = '';
+            tower.onclick = null;
 
-
-          /* =========================
-             非金額資料
-          ========================= */
-
-          } else if (!isMoney) {
-
+        } else if (!isMoney) {
             tower.classList.add('noselected');
-
             tower.style.backgroundColor = 'gray';
-
             tower.style.cursor = 'not-allowed';
-
             tower.style.color = 'white';
 
 
