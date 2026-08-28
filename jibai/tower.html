@@ -220,20 +220,7 @@
       林汝禮
     </div>
 
-<<<<<<< HEAD
     <div class="tower item1 selected" data-zone="A">
-=======
-  <!-- =========================
-       預設選 A棟
-  ========================= -->
-
-<<<<<<< HEAD
-    <div class="tower item1" data-zone="A">
->>>>>>> 79c109f9544aaf9b834cd33fb22290c411030dec
-=======
-
-    <div class="tower item1 selected" data-zone="A">
->>>>>>> 01c81c9906b9724a8c2d2c31a6ccd21fd875bc3a
       A棟
     </div>
 
@@ -250,18 +237,8 @@
       走
     </div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     <div class="tower item1" data-zone="C">
       C棟
-=======
-    <div class="tower item1 selected" data-zone="A">
-      A棟
->>>>>>> 79c109f9544aaf9b834cd33fb22290c411030dec
-=======
-    <div class="tower item1" data-zone="C">
-      C棟
->>>>>>> 01c81c9906b9724a8c2d2c31a6ccd21fd875bc3a
     </div>
 
   </div>
@@ -632,29 +609,29 @@
           /* =========================
              已選
           ========================= */
+
           if (taken.has(code)) {
-            tower.classList.add('taken');
-            tower.style.backgroundColor = '#999';
-            tower.style.cursor = 'not-allowed';
-            tower.style.color = 'white';
-            tower.innerHTML = `${code}<br>已選`;
+              tower.classList.add('taken');
+              tower.style.backgroundColor = '#999';
+              tower.style.cursor = 'not-allowed';
+              tower.style.color = 'white';
+              tower.innerHTML = `${code}<br>已選`;
 
-        } else if (!hasPrice) {
-            // 沒有價格資料：保留位置，但完全空白
-            tower.classList.add('empty-slot');
-            tower.style.backgroundColor = 'transparent';
-            tower.style.border = 'none';
-            tower.style.color = 'transparent';
-            //tower.style.marginRight = '6px';
-            tower.style.cursor = 'default';
-            tower.innerHTML = '';
-            tower.onclick = null;
+          } else if (!hasPrice) {
+              // 沒有價格資料：保留位置，但完全空白
+              tower.classList.add('empty-slot');
+              tower.style.backgroundColor = 'transparent';
+              tower.style.border = 'none';
+              tower.style.color = 'transparent';
+              tower.style.cursor = 'default';
+              tower.innerHTML = '';
+              tower.onclick = null;
 
-        } else if (!isMoney) {
-            tower.classList.add('noselected');
-            tower.style.backgroundColor = 'gray';
-            tower.style.cursor = 'not-allowed';
-            tower.style.color = 'white';
+          } else if (!isMoney) {
+              tower.classList.add('noselected');
+              tower.style.backgroundColor = 'gray';
+              tower.style.cursor = 'not-allowed';
+              tower.style.color = 'white';
 
 
             let tempPriceArr =
