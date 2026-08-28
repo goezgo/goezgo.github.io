@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>塔位查詢</title>
+
+  <!-- 保留原本 Excel / Google 試算表讀取方式 -->
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* =========================
+       原本塔位樣式
+    ========================= */
+
+    .tower-zone {
+      margin-bottom: 40px;
+    }
+
+    .zone-label {
+      font-size: 1.2em;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    .floor {
+      display: flex;
+      margin-bottom: 5px;
+    }
+
+    .tower {
+      width: 70px;
+      height: 70px;
+      border: 1px solid #ccc;
+      margin-right: 5px;
+      background-color: #eee;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 0.7em;
+      text-align: center;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    .tower span.price {
+      font-weight: normal;
+      margin-top: 5px;
+    }
+
+    .tower:hover:not(.taken):not(.selected):not(.noselected) {
+      background-color: #cce7ff;
+    }
+
+    .tower.taken {
+      background-color: #999;
+      cursor: not-allowed;
+      color: white;
+    }
+
+    .tower.noselected {
+      background-color: gray;
+      cursor: not-allowed;
+      color: white;
+    }
+
+    .red {
+      color: red !important;
+      background-color: pink !important;
+    }
+
+    .downCode {
+      border-radius: 0 0 8px 8px;
+      margin-top: -6px;
+      height: 77px;
+      border-color: gray;
+    }
+
+    .upCode {
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      border-color: gray;
+    }
+
+    .codeVerticalY {
+      position: absolute;
+      top: 44px;
+    }
+
+
+    /* =========================
+       原本棟別選擇版面
+    ========================= */
+
+    .floor1 {
+      width: 18rem;
+      justify-content: space-between !important;
+    }
+
+    .tower.item1 {
+      height: 38px;
+      width: 140px;
+    }
+
+    .tower.item2 {
+      height: 38px;
+      background-color: gray;
+      color: white;
+      cursor: auto;
+    }
+
+    .tower.item3 {
+      height: 38px;
+      border: 0;
+      background-color: #fff;
+      cursor: auto;
+      width: 155px;
+    }
+
+    .tower.item4 {
+      height: 38px;
+      border: 0;
+      background-color: #fff;
+      cursor: auto;
+    }
+
+    .tower.item5 {
+      height: 38px;
+      width: 140px;
+      border: 0;
+      background-color: #fff;
+      cursor: auto;
+    }
+
+    .tower.item1.selected {
+      background-color: lightblue;
+    }
+
+    .bgWhite {
+      background-color: white !important;
+      border-color: white;
+    }
+
+    /* =========================
+       手機版
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 10px;
+      }
+
+      .floor1 {
+        width: 100%;
+      }
+
+      #zones {
+        overflow-x: auto;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <!-- =========================
+       棟別選擇
+  ========================= -->
+
+  <div class="floor floor1">
+
+    <div class="tower item5">&nbsp;</div>
+
+    <div class="tower item2 forefatherBox bgWhite">
+      十三世<br>
+      曾慈順
+    </div>
+
+    <div class="tower item2 forefatherBox bgWhite">
+      十三世<br>
+      林期爪
+    </div>
+
+    <div class="tower item5">&nbsp;</div>
+
+  </div>
+
+
+  <div class="floor floor1">
+
+    <div class="tower item1" data-zone="B">
+      B棟
+    </div>
+
+    <div class="tower item2 forefatherBox bgWhite">
+      十四世<br>
+      江謚梅
+    </div>
+
+    <div class="tower item2 forefatherBox bgWhite">
+      十四世<br>
+      林汝禮
+    </div>
+
+<<<<<<< HEAD
+    <div class="tower item1 selected" data-zone="A">
+=======
+  <!-- =========================
+       預設選 A 棟
+  ========================= -->
+
+    <div class="tower item1" data-zone="A">
+>>>>>>> 79c109f9544aaf9b834cd33fb22290c411030dec
+      A棟
+    </div>
+
+  </div>
+
+
+  <div class="floor floor1">
+
+    <div class="tower item1" data-zone="D">
+      D棟
+    </div>
+
+    <div class="tower item3">
+      走
+    </div>
+
+<<<<<<< HEAD
+    <div class="tower item1" data-zone="C">
+      C棟
+=======
+    <div class="tower item1 selected" data-zone="A">
+      A棟
+>>>>>>> 79c109f9544aaf9b834cd33fb22290c411030dec
+    </div>
+
+  </div>
+
+
+  <div class="floor floor1">
+
+    <div class="tower item1" data-zone="F">
+      F棟
+    </div>
+
+    <div class="tower item3">
+      道
+    </div>
+
+    <div class="tower item1" data-zone="E">
+      E棟
+    </div>
+
+  </div>
+
+
+  <div class="floor floor1">
+
+    <div class="tower item4">&nbsp;</div>
+    <div class="tower item4">&nbsp;</div>
+    <div class="tower item4">&nbsp;</div>
+    <div class="tower item4">入口</div>
+
+  </div>
+
+
+  <!-- =========================
+       塔位顯示區
+  ========================= -->
+
+  <div id="zones"></div>
+
+
+  <script>
+
+    /* =========================
+       原本資料變數
+    ========================= */
+
+    const taken = new Set();
+
+    const prices = {};
+
+    const towerCodes = {};
+
+    const forefathers = [];
+
+    const towerColNums = {};
+
+    const bookings = [];
+
+
+    /* =========================
+       顯示指定棟別
+    ========================= */
+
+    function renderZone(zone) {
+
+      document.getElementById('zones').innerHTML = '';
+
+      if (zone) {
+        createZone(zone);
+      }
+
+    }
+
+
+    /* =========================
+       建立塔位
+       直接保留原本主要邏輯
+    ========================= */
+
+    function createZone(zone) {
+
+      const container = document.createElement('div');
+
+      container.className = 'tower-zone';
+
+
+      /* 棟別標題 */
+
+      const label = document.createElement('div');
+
+      label.className = 'zone-label';
+
+      label.textContent = `${zone}棟`;
+
+      container.appendChild(label);
+
+
+      /* =========================
+         祖先資料顯示
+      ========================= */
+
+      if (forefathers.length <= 2) {
+
+        const boxes = document.querySelectorAll('.forefatherBox');
+
+        boxes[0].innerHTML = '未填寫';
+
+        boxes[1].innerHTML = '未填寫';
+
+        boxes[2].innerHTML =
+          forefathers[0]?.replace(/B/g, '<br>') || '未填寫';
+
+        boxes[3].innerHTML =
+          forefathers[1]?.replace(/B/g, '<br>') || '未填寫';
+
+        boxes[2].classList.remove('bgWhite');
+
+        boxes[3].classList.remove('bgWhite');
+
+      } else {
+
+        const boxes = document.querySelectorAll('.forefatherBox');
+
+        for (let i = 0; i < boxes.length; i++) {
+
+          boxes[i].innerHTML =
+            forefathers[i]?.replace(/B/g, '<br>') || '未填寫';
+
+          boxes[i].classList.remove('bgWhite');
+
+        }
+
+      }
+
+
+      /* =========================
+         原本總塔位計算
+      ========================= */
+
+      let totalSlots = 15;
+
+      const rows = 5;
+
+
+      if (towerColNums[zone]) {
+
+        totalSlots =
+          towerColNums[zone][0]
+            ? towerColNums[zone][0]
+            : 0;
+
+      }
+
+
+      let towerColNumsIndex = 0;
+
+      let towerColNumsTotal = 0;
+
+
+      /* =========================
+         5樓 → 1樓
+      ========================= */
+
+      for (let row = 0; row < rows; row++) {
+
+        const rowDiv = document.createElement('div');
+
+        rowDiv.className = 'floor';
+
+        rowDiv.style.display = 'flex';
+
+        rowDiv.style.alignItems = 'center';
+
+        rowDiv.style.marginBottom = '5px';
+
+
+        /* 樓層 */
+
+        const floorLabel = document.createElement('div');
+
+        floorLabel.style.width = '60px';
+
+        floorLabel.style.display = 'flex';
+
+        floorLabel.style.alignItems = 'center';
+
+        floorLabel.style.justifyContent = 'center';
+
+        floorLabel.style.fontWeight = 'bold';
+
+        floorLabel.textContent = `${5 - row}樓`;
+
+        rowDiv.appendChild(floorLabel);
+
+
+        /* 每層塔位數 */
+
+        towerColNumsIndex = row + 1;
+
+
+        const cols =
+          towerColNums[zone][towerColNumsIndex]
+            ? towerColNums[zone][towerColNumsIndex]
+            : 3;
+
+
+        /* 保留原本寬度 */
+
+        const towerWidth =
+          cols == 4
+            ? '70px'
+            : '96px';
+
+
+        const towerHeight = '70px';
+
+
+        /* =========================
+           原本資料索引方式
+        ========================= */
+
+        let dataIndices = [];
+
+
+        if (cols == 4) {
+
+          dataIndices = [
+
+            towerColNumsTotal,
+            towerColNumsTotal + 1,
+            towerColNumsTotal + 2,
+            towerColNumsTotal + 3
+
+          ];
+
+        } else {
+
+          dataIndices = [
+
+            towerColNumsTotal,
+            towerColNumsTotal + 1,
+            towerColNumsTotal + 2
+
+          ];
+
+        }
+
+
+        towerColNumsTotal =
+          towerColNumsTotal +
+          towerColNums[zone][towerColNumsIndex];
+
+
+        /* =========================
+           建立每個塔位
+        ========================= */
+
+        for (let col = 0; col < cols; col++) {
+
+          const index = dataIndices[col];
+
+
+          if (index >= totalSlots) {
+            break;
+          }
+
+
+          const defaultCode =
+            `${zone}${(index + 1)
+              .toString()
+              .padStart(2, '0')}`;
+
+
+          let code =
+            towerCodes[zone] &&
+            towerCodes[zone][index] !== undefined
+
+              ? towerCodes[zone][index]
+
+              : defaultCode;
+
+
+          /* 包裝 */
+
+          const wrapper =
+            document.createElement('div');
+
+
+          wrapper.className = 'tower-wrapper';
+
+          wrapper.style.marginRight = '5px';
+
+          wrapper.style.display = 'flex';
+
+          wrapper.style.flexDirection = 'column';
+
+          wrapper.style.alignItems = 'center';
+
+
+          /* 塔位 */
+
+          const tower =
+            document.createElement('div');
+
+
+          tower.className = 'tower';
+
+          tower.dataset.code = code;
+
+          tower.dataset.zone = zone;
+
+          tower.style.width = towerWidth;
+
+          tower.style.height = towerHeight;
+
+
+          /* =========================
+             讀取價格 / 狀態
+          ========================= */
+
+          const hasPrice = prices[zone] && prices[zone][index] !== undefined;
+          let price = hasPrice ? prices[zone][index] : '';
+
+
+          tower.dataset.price = price;
+
+
+          const moneyMode =
+            /^\d+(\.\d{2})?$/;
+
+
+          const isMoney =
+            moneyMode.test(price);
+
+
+          /* =========================
+             原本 5樓、3樓下方框
+          ========================= */
+
+          let bottomBox = null;
+
+
+          if (row == 0 || row == 2) {
+
+            bottomBox =
+              document.createElement('div');
+
+
+            bottomBox.style.height = '12px';
+
+            bottomBox.style.border =
+              '3px solid gray';
+
+            bottomBox.style.marginBottom =
+              '30px';
+
+            bottomBox.style.marginTop =
+              '5px';
+
+            bottomBox.style.width =
+              '100%';
+
+            bottomBox.style.borderRadius =
+              '2px';
+
+          }
+
+
+          /* =========================
+             已選
+          ========================= */
+          if (taken.has(code)) {
+            tower.classList.add('taken');
+            tower.style.backgroundColor = '#999';
+            tower.style.cursor = 'not-allowed';
+            tower.style.color = 'white';
+            tower.innerHTML = `${code}<br>已選`;
+
+        } else if (!hasPrice) {
+            // 沒有價格資料：保留位置，但完全空白
+            tower.classList.add('empty-slot');
+            tower.style.backgroundColor = 'transparent';
+            tower.style.border = 'none';
+            tower.style.color = 'transparent';
+            //tower.style.marginRight = '6px';
+            tower.style.cursor = 'default';
+            tower.innerHTML = '';
+            tower.onclick = null;
+
+        } else if (!isMoney) {
+            tower.classList.add('noselected');
+            tower.style.backgroundColor = 'gray';
+            tower.style.cursor = 'not-allowed';
+            tower.style.color = 'white';
+
+
+            let tempPriceArr =
+              String(price).split('B');
+
+
+            if (tempPriceArr.length > 1) {
+
+              price =
+                tempPriceArr.join('<br>');
+
+            }
+
+
+            tower.innerHTML =
+              `${code}<br>${price}`;
+
+
+            /* R 預定狀態 */
+
+            if (String(price).indexOf('R') > -1) {
+
+              tower.classList.add('red');
+
+              tower.style.backgroundColor = 'pink';
+
+              tower.style.color = 'red';
+
+              tower.innerHTML =
+                `${code}<br>` +
+                String(price).replace('R', '<br>');
+
+            }
+
+
+            /* =========================
+               上下合併塔位
+            ========================= */
+
+            if (row == 2 || row == 4) {
+
+              const upIndex =
+                index - cols;
+
+
+              if (upIndex > 0) {
+
+                const upCode =
+                  towerCodes[zone] &&
+                  towerCodes[zone][upIndex] !== undefined
+
+                    ? towerCodes[zone][upIndex]
+
+                    : '';
+
+
+                if (upCode == code) {
+
+                  tower.innerHTML = '';
+
+                  tower.classList.add('downCode');
+
+                  tower.style.borderRadius =
+                    '0 0 8px 8px';
+
+                  tower.style.marginTop =
+                    '-6px';
+
+                  tower.style.height =
+                    '77px';
+
+                  tower.style.borderColor =
+                    'gray';
+
+                }
+
+              }
+
+            }
+
+
+            if (row == 1 || row == 3) {
+
+              const downIndex =
+                index + cols;
+
+
+              if (downIndex < totalSlots) {
+
+                const downCode =
+                  towerCodes[zone] &&
+                  towerCodes[zone][downIndex] !== undefined
+
+                    ? towerCodes[zone][downIndex]
+
+                    : '';
+
+
+                if (downCode == code) {
+
+                  tower.innerHTML =
+                    '<div class="codeVerticalY">' +
+                    tower.innerHTML +
+                    '</div>';
+
+
+                  tower.classList.add('upCode');
+
+                  tower.style.borderRadius =
+                    '8px 8px 0 0';
+
+                  tower.style.position =
+                    'relative';
+
+                  tower.style.borderColor =
+                    'gray';
+
+                }
+
+              }
+
+            }
+
+
+          /* =========================
+             正常金額塔位
+          ========================= */
+
+          } else {
+
+            const priceStr =
+              Number(price).toLocaleString();
+
+
+            tower.innerHTML =
+              `${code}<br>` +
+              `<span class="price">${priceStr}</span>`;
+
+          }
+
+
+          wrapper.appendChild(tower);
+
+
+          /* 加入下方框 */
+
+          if (bottomBox) {
+
+            wrapper.appendChild(bottomBox);
+
+          }
+
+
+          rowDiv.appendChild(wrapper);
+
+        }
+
+
+        container.appendChild(rowDiv);
+
+      }
+
+
+      document
+        .getElementById('zones')
+        .appendChild(container);
+
+    }
+
+
+    /* =========================
+       棟別點擊
+    ========================= */
+
+    const elements =
+      document.querySelectorAll('.item1');
+
+
+    elements.forEach(element => {
+
+      element.addEventListener('click', function () {
+
+        elements.forEach(nav => {
+          nav.classList.remove('selected');
+        });
+
+
+        this.classList.add('selected');
+
+
+        renderZone(
+          this.dataset.zone
+        );
+
+      });
+
+    });
+
+
+    /* =========================
+       直接讀取原本塔位 Excel
+    ========================= */
+
+    async function loadExcelFromDrive() {
+
+      const fileId =
+        '17bZEcF5kuALMJV44dD90s9gttx9IAh0nRlUPmPQbfkY';
+
+
+      const downloadUrl =
+        'https://docs.google.com/spreadsheets/d/' +
+        fileId +
+        '/export?';
+
+
+      try {
+
+        const res =
+          await fetch(downloadUrl);
+
+
+        if (!res.ok) {
+
+          throw new Error(
+            `HTTP ${res.status}`
+          );
+
+        }
+
+
+        const blob =
+          await res.blob();
+
+
+        const arrayBuffer =
+          await blob.arrayBuffer();
+
+
+        const workbook =
+          XLSX.read(
+            arrayBuffer,
+            {
+              type: 'array'
+            }
+          );
+
+
+        /* 保留原本第 3 個工作表 */
+
+        const sheetName =
+          workbook.SheetNames[2];
+
+
+        const sheet =
+          workbook.Sheets[sheetName];
+
+
+        const sheetData =
+          XLSX.utils.sheet_to_json(
+            sheet,
+            {
+              header: 1
+            }
+          );
+
+
+        return sheetData;
+
+
+      } catch (err) {
+
+        console.error(
+          '讀取失敗：',
+          err
+        );
+
+
+        document.getElementById('zones').innerHTML =
+          '<p style="color:red;">塔位資料讀取失敗，請確認 Google 試算表是否允許讀取。</p>';
+
+      }
+
+    }
+
+
+    /* =========================
+       讀取資料並建立塔位
+       保留原本資料欄位結構
+    ========================= */
+
+    async function main() {
+
+      const sheetData =
+        await loadExcelFromDrive();
+
+
+      if (!sheetData) {
+        return;
+      }
+
+
+      sheetData.forEach(
+        (
+          [
+            key,
+            value,
+            code,
+            information,
+            photo,
+            forefather,
+            g,
+            h,
+            towerColNum,
+            j,
+            booking
+          ]
+        ) => {
+
+
+          /* 價格 / 狀態 */
+
+          if (!prices[key]) {
+
+            prices[key] = [];
+
+          }
+
+          prices[key].push(value);
+
+          if (!information[key]) {
+
+            informations[key] = [];
+
+          }
+
+          informations[key].push(information);
+
+          if (!photo[key]) {
+
+            photos[key] = [];
+
+          }
+
+          photos[key].push(photo);          
+console.log('生平資料：', informations);
+
+console.log('照片：', photos);
+          /* 塔位號碼 */
+
+          if (!towerCodes[key]) {
+
+            towerCodes[key] = [];
+
+          }
+
+          towerCodes[key].push(code);
+
+
+          /* 祖先 */
+
+          if (forefather) {
+
+            forefathers.push(
+              forefather
+            );
+
+          }
+
+
+          /* 每層塔位數 */
+
+          if (!towerColNums[key]) {
+
+            towerColNums[key] = [];
+
+          }
+
+
+          if (towerColNum) {
+
+            towerColNums[key].push(
+              parseInt(
+                towerColNum,
+                10
+              )
+            );
+
+          }
+
+
+          /* 預定設定 */
+
+          bookings.push(
+            parseInt(
+              booking,
+              10
+            )
+          );
+
+        }
+      );
+
+
+      /* 保留原本反轉方式 */
+
+      for (let key in towerColNums) {
+
+        towerColNums[key].reverse();
+
+      }
+
+
+      /* 預設顯示 A棟 */
+
+      renderZone('A');
+
+    }
+
+
+    /* =========================
+       啟動
+    ========================= */
+
+    main();
+
+  </script>
+
+</body>
+</html>
