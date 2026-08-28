@@ -25,6 +25,7 @@
 
     .tower-zone {
       margin-bottom: 40px;
+      position: relative;
     }
 
     .zone-label {
@@ -91,10 +92,20 @@
     }
 
     .upCode {
-      border-radius: 8px 8px 0 0;
-      position: relative;
       border-color: gray;
+      border-bottom:0;
+      position: absolute;
+      height: 142px!important;
     }
+    .upCode-col-0 {
+      left: 60px;
+    }
+    .upCode-col-1 {
+      left: 166px;
+    }
+    .upCode-col-2 {
+      left: 272px;
+    }                  
 
     .codeVerticalY {
       position: absolute;
@@ -155,16 +166,11 @@
       border-color: white;
     }
 
-    /* =========================
-       生平資料顯示區
-    ========================= */
-
-    #biographyPanel { display:none; margin-top:30px; padding:20px; border:1px solid #ccc; border-radius:10px; background:#fafafa; box-sizing:border-box; }
-    #biographyTitle { font-size:1.25em; font-weight:bold; text-align:center; margin-bottom:20px; }
-    .biography-content { display:flex; align-items:flex-start; gap:20px; }
-    .biography-photo { width:180px; max-height:280px; object-fit:contain; border-radius:8px; border:1px solid #ddd; background:#fff; flex-shrink:0; }
-    .biography-text { flex:1; line-height:1.8; white-space:pre-line; word-break:break-word; }
-    .biography-no-photo { width:180px; min-height:80px; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; border-radius:8px; background:#fff; color:#999; flex-shrink:0; }
+    #informationBox { display:none; width:100%; margin-top:30px; box-sizing:border-box; }
+    .information-content { width:100%; display:flex; flex-direction:row; align-items:flex-start; gap:30px; padding:25px; box-sizing:border-box; border:1px solid #ddd; border-radius:10px; background:#fff; }
+    .information-photo { flex:0 0 40%; text-align:center; }
+    .information-photo img { width:100%; max-width:500px; height:auto; display:block; margin:0 auto; object-fit:contain; }
+    .information-text { flex:1; min-width:0; line-height:1.8; font-size:16px; word-break:break-word; }
 
     /* =========================
        手機版
@@ -180,10 +186,19 @@
         width: 100%;
       }
 
-      #zones { overflow-x: auto; }
-      .biography-content { flex-direction:column; align-items:center; }
-      .biography-photo, .biography-no-photo { width:80%; max-width:300px; }
-      .biography-text { width:100%; }
+      #zones {
+        overflow-x: auto;
+      }
+
+      .upCode-col-0 {
+        left: 16px;
+      }
+      .upCode-col-1 {
+        left: 122px;
+      }
+      .upCode-col-2 {
+        left: 228px;
+      } 
 
     }
 
@@ -231,11 +246,6 @@
       十四世<br>
       林汝禮
     </div>
-
-  <!-- =========================
-       預設選 A棟
-  ========================= -->
-
 
     <div class="tower item1 selected" data-zone="A">
       A棟
@@ -294,14 +304,8 @@
 
   <div id="zones"></div>
 
-  <div id="biographyPanel">
-    <div id="biographyTitle"></div>
-    <div class="biography-content">
-      <img id="biographyPhoto" class="biography-photo" alt="照片" style="display:none;">
-      <div id="biographyNoPhoto" class="biography-no-photo" style="display:none;">尚無照片</div>
-      <div id="biographyText" class="biography-text"></div>
-    </div>
-  </div>
+  <div id="informationBox"></div>
+
 
   <script>
 
@@ -321,9 +325,84 @@
 
     const bookings = [];
 
-    // Sheet2：A欄棟別、B欄姓名、C欄塔位代號、D欄生平資料、E欄照片連結
-    const biographyData = {};
-    let biographySelectedCode = '';
+    const informations = {};
+
+    const photos = {};
+
+    let activeInformationCode = null;
+
+    function showInformation(code) {
+
+      const informationBox = document.getElementById('informationBox');
+
+      // if (activeInformationCode === code) {
+      //   activeInformationCode = null;
+      //   informationBox.innerHTML = '';
+      //   informationBox.style.display = 'none';
+      //   return;
+      // }
+
+      let targetZone = null;
+      let targetIndex = -1;
+
+      for (const zone in towerCodes) {
+        const index = towerCodes[zone].findIndex(
+          towerCode => String(towerCode) === String(code)
+        );
+        if (index !== -1) {
+          targetZone = zone;
+          targetIndex = index;
+          break;
+        }
+      }
+
+      // if (targetZone === null || targetIndex === -1) {
+      //   activeInformationCode = null;
+      //   informationBox.innerHTML = '';
+      //   informationBox.style.display = 'none';
+      //   return;
+      // }
+
+      const information =
+        informations[targetZone] &&
+        informations[targetZone][targetIndex] !== undefined
+          ? informations[targetZone][targetIndex] : '';
+
+      const photo =
+        photos[targetZone] &&
+        photos[targetZone][targetIndex] !== undefined
+          ? photos[targetZone][targetIndex] : '';
+
+      activeInformationCode = code;
+
+      const photoHTML = photo ? `
+        <div class="information-photo">
+          <img src="${photo}" alt="${code}"
+              onerror="this.parentElement.style.display='none'">
+        </div>` : '';
+
+      const informationHTML = information ? `
+        <div class="information-text">
+          ${String(information).replace(/\n/g, '<br>')}
+        </div>` : '';
+
+      informationBox.innerHTML = `
+        <div class="information-content">
+          ${photoHTML}
+          ${informationHTML}
+        </div>`;
+
+      informationBox.style.display = 'block';
+
+      // ========== 新增：滾動到照片位置 ==========
+      setTimeout(() => {
+        informationBox.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+      // ========================================
+    }
 
 
     /* =========================
@@ -333,6 +412,10 @@
     function renderZone(zone) {
 
       document.getElementById('zones').innerHTML = '';
+      activeInformationCode = null;
+      const informationBox = document.getElementById('informationBox');
+      informationBox.innerHTML = '';
+      informationBox.style.display = 'none';
 
       if (zone) {
         createZone(zone);
@@ -638,31 +721,27 @@
           /* =========================
              已選
           ========================= */
+
           if (taken.has(code)) {
-            tower.classList.add('taken');
-            tower.style.backgroundColor = '#999';
-            tower.style.cursor = 'pointer';
-            tower.style.color = 'white';
-            tower.innerHTML = `${code}<br>已選`;
-            tower.onclick = () => toggleBiography(code);
+              //  tower.classList.add('taken');
+               tower.innerHTML = `${code}<br>已選`;             
 
-        } else if (!hasPrice) {
-            // 沒有價格資料：保留位置，但完全空白
-            tower.classList.add('empty-slot');
-            tower.style.backgroundColor = 'transparent';
-            tower.style.border = 'none';
-            tower.style.color = 'transparent';
-            //tower.style.marginRight = '6px';
-            tower.style.cursor = 'default';
-            tower.innerHTML = '';
-            tower.onclick = null;
+          } else if (!hasPrice) {
+              // 沒有價格資料：保留位置，但完全空白
+              tower.classList.add('empty-slot');
+              tower.style.backgroundColor = 'transparent';
+              tower.style.border = 'none';
+              tower.style.color = 'transparent';
+              tower.style.cursor = 'default';
+              tower.innerHTML = '';
+              tower.onclick = null;              
 
-        } else if (!isMoney) {
-            tower.classList.add('noselected');
-            tower.style.backgroundColor = 'gray';
-            tower.style.cursor = 'not-allowed';
-            tower.style.color = 'white';
+          } else if (!isMoney) {
+              // tower.classList.add('noselected');
 
+              tower.addEventListener('click', function () {
+                showInformation(code);
+              });
 
             let tempPriceArr =
               String(price).split('B');
@@ -696,13 +775,12 @@
 
             }
 
-
             /* =========================
                上下合併塔位
             ========================= */
 
             if (row == 2 || row == 4) {
-
+              
               const upIndex =
                 index - cols;
 
@@ -724,18 +802,14 @@
 
                   tower.classList.add('downCode');
 
-                  tower.style.borderRadius =
-                    '0 0 8px 8px';
-
-                  tower.style.marginTop =
-                    '-6px';
-
-                  tower.style.height =
-                    '77px';
-
-                  tower.style.borderColor =
-                    'gray';
-
+                } else {
+                  const hasPrice = prices[zone] && prices[zone][upIndex] !== undefined;
+                  if (!hasPrice) {
+                    tower.style.marginTop = '-6px';
+                  } else {
+                    tower.style.height = '64px';
+                    console.log('shuaiquan')
+                  }
                 }
 
               }
@@ -758,27 +832,27 @@
                     ? towerCodes[zone][downIndex]
 
                     : '';
-
-
+                
                 if (downCode == code) {
 
-                  tower.innerHTML =
-                    '<div class="codeVerticalY">' +
-                    tower.innerHTML +
-                    '</div>';
+                  const tower1 = document.createElement('div');
 
 
+                  tower1.className = 'tower';
+                  tower1.dataset.code = code;
+                  tower1.dataset.zone = zone;
+                  tower1.style.width = towerWidth;
+                  tower1.style.height = towerHeight;  
+                  wrapper.appendChild(tower1);
+
+                  tower.innerHTML = '<div class="codeVerticalY">' + tower.innerHTML + '</div>';
                   tower.classList.add('upCode');
+                  tower.classList.add('upCode-col-'+col);
+                  tower.style.top = row == 1 ? '165px' : '362px';
+                  // tower.style.left = col == 1 ? '166px' : (col == 2 ? '272px' : '60px');
 
-                  tower.style.borderRadius =
-                    '8px 8px 0 0';
-
-                  tower.style.position =
-                    'relative';
-
-                  tower.style.borderColor =
-                    'gray';
-
+                } else {
+                  tower.style.marginTop = '-6px';
                 }
 
               }
@@ -799,6 +873,12 @@
             tower.innerHTML =
               `${code}<br>` +
               `<span class="price">${priceStr}</span>`;
+
+
+            if (row == 1 || row == 3) {
+
+              tower.style.marginTop = '-7px';
+            }  
 
           }
 
@@ -948,104 +1028,6 @@
 
 
     /* =========================
-       生平資料顯示 / 隱藏
-    ========================= */
-
-    function hideBiography() {
-      biographySelectedCode = '';
-      document.getElementById('biographyPanel').style.display = 'none';
-    }
-
-    function toggleBiography(code) {
-      if (biographySelectedCode === code) {
-        hideBiography();
-        return;
-      }
-
-      const data = biographyData[code];
-      if (!data || (!data.bio && !data.photo)) {
-        hideBiography();
-        return;
-      }
-
-      biographySelectedCode = code;
-      const panel = document.getElementById('biographyPanel');
-      const title = document.getElementById('biographyTitle');
-      const textBox = document.getElementById('biographyText');
-      const photo = document.getElementById('biographyPhoto');
-      const noPhoto = document.getElementById('biographyNoPhoto');
-
-      title.textContent = `${code}${data.name ? '　' + data.name : ''}｜生平資料`;
-      textBox.textContent = data.bio || '尚無生平資料';
-
-      photo.onerror = () => {
-        photo.style.display = 'none';
-        noPhoto.style.display = 'flex';
-      };
-
-      if (data.photo) {
-        photo.src = convertGoogleDriveImageUrl(data.photo);
-        photo.style.display = 'block';
-        noPhoto.style.display = 'none';
-      } else {
-        photo.src = '';
-        photo.style.display = 'none';
-        noPhoto.style.display = 'flex';
-      }
-
-      panel.style.display = 'block';
-      panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
-    }
-
-    function convertGoogleDriveImageUrl(url) {
-      const value = String(url || '').trim();
-      const match = value.match(/drive\.google\.com\/file\/d\/([^/]+)/);
-      return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : value;
-    }
-
-    /* =========================
-       讀取 Sheet2 生平資料
-       A欄：棟別
-       B欄：姓名
-       C欄：塔位代號
-       D欄：生平資料
-       E欄：照片連結
-    ========================= */
-
-    async function loadBiographyFromSheet2() {
-      const fileId = '17bZEcF5kuALMJV44dD90s9gttx9IAh0nRlUPmPQbfkY';
-      const downloadUrl = 'https://docs.google.com/spreadsheets/d/' + fileId + '/export?';
-
-      try {
-        const res = await fetch(downloadUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const blob = await res.blob();
-        const arrayBuffer = await blob.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type:'array' });
-        const sheetName = workbook.SheetNames[1];
-        const sheet = workbook.Sheets[sheetName];
-        if (!sheet) throw new Error('找不到 Sheet2');
-
-        const sheetData = XLSX.utils.sheet_to_json(sheet, { header:1 });
-        Object.keys(biographyData).forEach(k => delete biographyData[k]);
-
-        for (let i=1; i<sheetData.length; i++) {
-          const row = sheetData[i] || [];
-          const zone = row[0] !== undefined ? String(row[0]).trim() : '';
-          const name = row[1] !== undefined ? String(row[1]).trim() : '';
-          const code = row[2] !== undefined ? String(row[2]).trim() : '';
-          const bio = row[3] !== undefined ? String(row[3]).trim() : '';
-          const photo = row[4] !== undefined ? String(row[4]).trim() : '';
-          if (!code) continue;
-          biographyData[code] = { zone, name, bio, photo };
-        }
-        console.log('Sheet2 生平資料讀取完成', biographyData);
-      } catch (err) {
-        console.error('Sheet2 生平資料讀取失敗：', err);
-      }
-    }
-
-    /* =========================
        讀取資料並建立塔位
        保留原本資料欄位結構
     ========================= */
@@ -1067,8 +1049,8 @@
             key,
             value,
             code,
-            d,
-            e,
+            information,
+            photo,
             forefather,
             g,
             h,
@@ -1088,6 +1070,22 @@
           }
 
           prices[key].push(value);
+
+          if (!informations[key]) {
+
+            informations[key] = [];
+
+          }
+
+          informations[key].push(information);
+
+          if (!photos[key]) {
+
+            photos[key] = [];
+
+          }
+
+          photos[key].push(photo); 
 
 
           /* 塔位號碼 */
@@ -1154,8 +1152,6 @@
 
       }
 
-
-      await loadBiographyFromSheet2();
 
       /* 預設顯示 A棟 */
 
