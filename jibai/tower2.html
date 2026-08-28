@@ -61,11 +61,16 @@
     .tower span.price {
       font-weight: normal;
       margin-top: 5px;
-    }
+    }   
 
-    .tower:hover:not(.taken):not(.selected):not(.noselected) {
+    .tower:hover:not(.taken):not(.selected):not(.justthis):not(.noselected):not(.item2):not(.item3):not(.item4):not(.item5) {
       background-color: #cce7ff;
     }
+
+    .tower.item3:hover {
+      cursor: auto!important;
+    }
+
 
     .tower.taken {
       background-color: #999;
@@ -138,7 +143,6 @@
       height: 38px;
       border: 0;
       background-color: #fff;
-      cursor: auto;
       width: 155px;
     }
 
