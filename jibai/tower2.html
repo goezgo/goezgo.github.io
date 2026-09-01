@@ -63,8 +63,12 @@
       margin-top: 5px;
     }   
 
-    .tower:hover:not(.taken):not(.selected):not(.justthis):not(.noselected):not(.item2):not(.item3):not(.item4):not(.item5) {
+    .tower:hover:not(.taken):not(.selected):not(.justthis):not(.noselected):not(.item3):not(.item4):not(.item5) {
       background-color: #cce7ff;
+    }
+
+    .tower.item2:hover {
+      color: #000!important;
     }
 
     .tower.item3:hover {
@@ -136,7 +140,7 @@
       height: 38px;
       background-color: gray;
       color: white;
-      cursor: auto;
+      cursor: pointer;
     }
 
     .tower.item3 {
@@ -164,6 +168,13 @@
     .tower.item1.selected {
       background-color: lightblue;
     }
+    /* 選中塔位：與選中的棟別使用相同顏色 */
+    .tower.tower-selected {
+      background-color: lightblue !important;
+      border-color: #999 !important;
+      color: inherit;
+    }
+
 
     .bgWhite {
       background-color: white !important;
@@ -180,7 +191,7 @@
        手機版
     ========================= */
 
-    @media (max-width: 600px) {
+    @media (max-width: 480px) {
 
       body {
         padding: 10px;
@@ -193,6 +204,28 @@
       #zones {
         overflow-x: auto;
       }
+      /* 手機版：照片與生平說明改為上下排列 */
+      .information-content {
+        flex-direction: column;
+        gap: 20px;
+        padding: 15px;
+      }
+
+      .information-photo {
+        flex: none;
+        width: 100%;
+      }
+
+      .information-photo img {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .information-text {
+        width: 100%;
+        flex: none;
+      }
+
 
       .upCode-col-0 {
         left: 16px;
@@ -323,7 +356,7 @@
 
     const towerCodes = {};
 
-    const forefathers = [];
+    let forefathers = [];
 
     const towerColNums = {};
 
@@ -334,20 +367,23 @@
     const photos = {};
 
     let activeInformationCode = null;
+    /* 目前選中的塔位 */
+    let selectedTowerCode = null;
 
     function showInformation(code) {
 
       const informationBox = document.getElementById('informationBox');
 
-      // if (activeInformationCode === code) {
-      //   activeInformationCode = null;
-      //   informationBox.innerHTML = '';
-      //   informationBox.style.display = 'none';
-      //   return;
-      // }
+      /* 同一塔位再次點擊：取消照片與生平資料 */
+      if (activeInformationCode === code) {
+        activeInformationCode = null;
+        informationBox.innerHTML = '';
+        informationBox.style.display = 'none';
+        return;
+      }
 
       let targetZone = null;
-      let targetIndex = -1;
+      let targetIndex = -1;  
 
       for (const zone in towerCodes) {
         const index = towerCodes[zone].findIndex(
@@ -375,7 +411,7 @@
       const photo =
         photos[targetZone] &&
         photos[targetZone][targetIndex] !== undefined
-          ? photos[targetZone][targetIndex] : '';
+          ? photos[targetZone][targetIndex] : '';  
 
       activeInformationCode = code;
 
@@ -454,8 +490,8 @@
       /* =========================
          祖先資料顯示
       ========================= */
-
-      if (forefathers.length <= 2) {
+      forefathers = prices['M']
+      if (!forefathers[2] && !forefathers[3]) {
 
         const boxes = document.querySelectorAll('.forefatherBox');
 
@@ -473,6 +509,20 @@
 
         boxes[3].classList.remove('bgWhite');
 
+        let boxIndex = 0
+        boxes.forEach((box, index) => {
+          box.addEventListener('click', (e) => {
+              const target = e.currentTarget; // 指向被点击的 box
+
+              boxIndex = index - 2;
+              document.querySelectorAll('.tower.tower-selected').forEach(t => {
+                t.classList.remove('tower-selected');
+              });
+              target.classList.add('tower-selected');
+              showInformation(towerCodes['M'][boxIndex]);
+          });
+        });
+
       } else {
 
         const boxes = document.querySelectorAll('.forefatherBox');
@@ -485,6 +535,17 @@
           boxes[i].classList.remove('bgWhite');
 
         }
+
+        boxes.forEach((box, index) => {
+          box.addEventListener('click', (e) => {
+            const target = e.currentTarget; // 指向被点击的 box  
+            document.querySelectorAll('.tower.tower-selected').forEach(t => {
+              t.classList.remove('tower-selected');
+            });
+            target.classList.add('tower-selected');
+            showInformation(towerCodes['M'][index]);
+          });
+        });
 
       }
 
@@ -515,7 +576,7 @@
 
       /* =========================
          5樓 → 1樓
-      ========================= */
+      ========================= */ 
 
       for (let row = 0; row < rows; row++) {
 
@@ -664,6 +725,12 @@
           tower.dataset.code = code;
 
           tower.dataset.zone = zone;
+          /* 目前選中的塔位使用與選中棟別相同的顏色 */
+          if (selectedTowerCode !== null &&
+              String(selectedTowerCode) === String(code)) {
+            tower.classList.add('tower-selected');
+          }
+
 
           tower.style.width = towerWidth;
 
@@ -744,6 +811,13 @@
               // tower.classList.add('noselected');
 
               tower.addEventListener('click', function () {
+                selectedTowerCode = code;
+
+                document.querySelectorAll('.tower.tower-selected').forEach(t => {
+                  t.classList.remove('tower-selected');
+                });
+                this.classList.add('tower-selected');
+
                 showInformation(code);
               });
 
@@ -932,6 +1006,11 @@
           nav.classList.remove('selected');
         });
 
+        /* 換棟別時清除上一棟選中的塔位 */
+        selectedTowerCode = null;
+        document.querySelectorAll('.tower.tower-selected').forEach(t => {
+          t.classList.remove('tower-selected');
+        });
 
         this.classList.add('selected');
 
@@ -1055,7 +1134,7 @@
             code,
             information,
             photo,
-            forefather,
+            f,
             g,
             h,
             towerColNum,
@@ -1100,18 +1179,7 @@
 
           }
 
-          towerCodes[key].push(code);
-
-
-          /* 祖先 */
-
-          if (forefather) {
-
-            forefathers.push(
-              forefather
-            );
-
-          }
+          towerCodes[key].push(code);          
 
 
           /* 每層塔位數 */
