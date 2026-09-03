@@ -358,6 +358,8 @@
 
     let forefathers = [];
 
+    let forefathersFlag = false;
+
     const towerColNums = {};
 
     const bookings = [];
@@ -411,9 +413,7 @@
       const photo =
         photos[targetZone] &&
         photos[targetZone][targetIndex] !== undefined
-          ? photos[targetZone][targetIndex] : '';  
-
-      activeInformationCode = code;
+          ? photos[targetZone][targetIndex] : '';        
 
       const photoHTML = photo ? `
         <div class="information-photo">
@@ -430,7 +430,7 @@
         <div class="information-content">
           ${photoHTML}
           ${informationHTML}
-        </div>`;
+        </div>`;      
 
       informationBox.style.display = 'block';
 
@@ -442,6 +442,8 @@
         });
       }, 100);
       // ========================================
+
+      activeInformationCode = code; 
     }
 
 
@@ -490,64 +492,63 @@
       /* =========================
          祖先資料顯示
       ========================= */
-      forefathers = prices['M']
-      if (!forefathers[2] && !forefathers[3]) {
+      if (!forefathersFlag) {
+        forefathersFlag = true 
+        forefathers = prices['M']
+        if (!forefathers[2] && !forefathers[3]) {
 
-        const boxes = document.querySelectorAll('.forefatherBox');
+          const boxes = document.querySelectorAll('.forefatherBox');
+          boxes[0].innerHTML = '未填寫';
+          boxes[1].innerHTML = '未填寫';
+          boxes[2].innerHTML =
+            forefathers[0]?.replace(/B/g, '<br>') || '未填寫';
+          boxes[3].innerHTML =
+            forefathers[1]?.replace(/B/g, '<br>') || '未填寫';
 
-        boxes[0].innerHTML = '未填寫';
+          boxes[2].classList.remove('bgWhite');
+          boxes[3].classList.remove('bgWhite');
 
-        boxes[1].innerHTML = '未填寫';
+          let boxIndex = 0
+          boxes.forEach((box, index) => {
+            box.addEventListener('click', (e) => {
+                const target = e.currentTarget; // 指向被点击的 box
 
-        boxes[2].innerHTML =
-          forefathers[0]?.replace(/B/g, '<br>') || '未填寫';
+                boxIndex = index - 2;
+                document.querySelectorAll('.tower.tower-selected').forEach(t => {
+                  t.classList.remove('tower-selected');
+                });
+                target.classList.add('tower-selected');
+                
+                showInformation(towerCodes['M'][boxIndex]);
+            });
+          });
 
-        boxes[3].innerHTML =
-          forefathers[1]?.replace(/B/g, '<br>') || '未填寫';
+        } else {
 
-        boxes[2].classList.remove('bgWhite');
+          const boxes = document.querySelectorAll('.forefatherBox');
 
-        boxes[3].classList.remove('bgWhite');
+          for (let i = 0; i < boxes.length; i++) {
 
-        let boxIndex = 0
-        boxes.forEach((box, index) => {
-          box.addEventListener('click', (e) => {
-              const target = e.currentTarget; // 指向被点击的 box
+            boxes[i].innerHTML =
+              forefathers[i]?.replace(/B/g, '<br>') || '未填寫';
 
-              boxIndex = index - 2;
+            boxes[i].classList.remove('bgWhite');
+
+          }
+
+          boxes.forEach((box, index) => {
+            box.addEventListener('click', (e) => {
+              const target = e.currentTarget; // 指向被点击的 box  
               document.querySelectorAll('.tower.tower-selected').forEach(t => {
                 t.classList.remove('tower-selected');
               });
               target.classList.add('tower-selected');
-              showInformation(towerCodes['M'][boxIndex]);
+              showInformation(towerCodes['M'][index]);
+            });
           });
-        });
-
-      } else {
-
-        const boxes = document.querySelectorAll('.forefatherBox');
-
-        for (let i = 0; i < boxes.length; i++) {
-
-          boxes[i].innerHTML =
-            forefathers[i]?.replace(/B/g, '<br>') || '未填寫';
-
-          boxes[i].classList.remove('bgWhite');
 
         }
-
-        boxes.forEach((box, index) => {
-          box.addEventListener('click', (e) => {
-            const target = e.currentTarget; // 指向被点击的 box  
-            document.querySelectorAll('.tower.tower-selected').forEach(t => {
-              t.classList.remove('tower-selected');
-            });
-            target.classList.add('tower-selected');
-            showInformation(towerCodes['M'][index]);
-          });
-        });
-
-      }
+      }      
 
 
       /* =========================
@@ -576,7 +577,7 @@
 
       /* =========================
          5樓 → 1樓
-      ========================= */ 
+      ========================= */
 
       for (let row = 0; row < rows; row++) {
 
@@ -886,7 +887,6 @@
                     tower.style.marginTop = '-6px';
                   } else {
                     tower.style.height = '64px';
-                    console.log('shuaiquan')
                   }
                 }
 
